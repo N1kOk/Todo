@@ -1,13 +1,24 @@
 <template>
-	<div>Test id</div>
+	<div class="pt-8 space-y-4">
+		<div class="text-sm text-gray-300">
+			<NuxtLink to="/">Главная</NuxtLink> / {{ store.todo.title }}
+		</div>
+
+		<AppCard class="space-y-2">
+			<h2 class="text-xl font-bold">{{ store.todo.title }}</h2>
+			<p class="text-sm">{{ store.todo.text }}</p>
+		</AppCard>
+
+		<AppDate :start="store.todo.startDate" :end="store.todo.endDate"/>
+	</div>
 </template>
 
-<script>
-export default {
-	name: '[id].vue',
-}
+<script setup lang="ts">
+import { useTodosStore } from '~/store'
+
+const route = useRoute()
+const { id } = route.params as { id: string }
+
+const store = useTodosStore()
+await store.fetchTodo(id)
 </script>
-
-<style scoped>
-
-</style>
