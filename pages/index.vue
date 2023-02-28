@@ -1,8 +1,12 @@
 <template>
-	<AppButton>
-		<span>Создать</span>
-		<img src="/images/plus.svg" alt="plus">
-	</AppButton>
+	<div class="space-y-12">
+		<AppButton>
+			<span>Создать</span>
+			<IconPlus/>
+		</AppButton>
+
+		<TodoList/>
+	</div>
 </template>
 
 <script>
