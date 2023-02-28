@@ -3,6 +3,7 @@ export default defineNuxtConfig({
 	modules: [
 		'@pinia/nuxt',
 		'@nuxtjs/tailwindcss',
+		'vite-plugin-vue-type-imports/nuxt'
 	],
 	tailwindcss: {
 		config: {
