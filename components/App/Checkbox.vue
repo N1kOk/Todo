@@ -1,30 +1,21 @@
 <template>
 	<div
 		class="checkbox"
-		:class="classes"
-		@click="isChecked = !isChecked"
+		:class="{
+			'checkbox--checked': isChecked,
+			'checkbox--unchecked': !isChecked,
+		}"
 	>
 		<IconCheck class="relative top-[1px]" v-show="isChecked"/>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { computed } from '#imports'
+interface CheckboxProps {
+	isChecked: boolean
+}
 
-const emit = defineEmits<{
-	(event: 'change', isChecked: boolean): void
-}>()
-
-const isChecked = ref(false)
-
-watch(isChecked, (newValue) => {
-	emit('change', newValue)
-})
-
-const classes = computed(() => ({
-	'checkbox--checked': isChecked.value,
-	'checkbox--unchecked': !isChecked.value,
-}))
+const { isChecked } = defineProps<CheckboxProps>()
 </script>
 
 <style scoped>
