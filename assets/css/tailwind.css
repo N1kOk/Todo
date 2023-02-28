@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Commissioner:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+    font-size: 16px;
+    font-family: 'Commissioner', sans-serif;
+    line-height: 140%;
+
+    @apply text-gray-100;
+}
+
+.container {
+    @apply w-[736px] mx-auto;
+}
+
+.rounded {
+    border-radius: 8px;
+}
