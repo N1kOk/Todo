@@ -1,10 +1,21 @@
 <template>
-	<div class="p-4 pb-8 bg-gray-500 rounded">
+	<div
+		class="p-4 pb-8 bg-gray-500 rounded transition-[filter]"
+		:class="{'todo--processing': isProcessing}"
+	>
 		<div class="flex items-start space-x-4">
-			<AppCheckbox @change="handleCheckboxClick"/>
+			<AppCheckbox
+				:is-checked="isCompleted"
+				@click="emit('toggle', id, !isCompleted)"
+			/>
 			<div class="flex flex-col flex-1 space-y-4">
 				<div class="flex justify-between items-center">
-					<h2 class="text-xl font-bold" :class="classesText">Title</h2>
+					<h2
+						class="text-xl font-bold"
+						:class="{'todo--completed': isCompleted}"
+					>
+						{{ title }}
+					</h2>
 					<div class="flex items-center space-x-4">
 						<div class="flex space-x-1 text-[10px]">
 							<div class="text-gray-300">
@@ -21,37 +32,33 @@
 					</div>
 				</div>
 
-				<p class="text-sm" :class="classesText">Lorem ipsum dolor sit amet</p>
+				<p class="text-sm" :class="{'todo--completed': isCompleted}">
+					{{ text }}
+				</p>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { computed } from '#imports'
+import type { Todo } from '~/types'
 
-const { id } = defineProps<{
-	id: number
-}>()
+const { id, title, text, isCompleted, isProcessing } = defineProps<Todo>()
 
 const emit = defineEmits<{
-	(event: 'edit', id: number): void
-	(event: 'remove', id: number): void
+	(event: 'edit', id: string): void
+	(event: 'remove', id: string): void
+	(event: 'toggle', id: string, value: boolean): void
 }>()
-
-const isCompleted = ref(false)
-
-const classesText = computed(() => ({
-	'todo--completed': isCompleted.value,
-}))
-
-function handleCheckboxClick(isChecked: boolean) {
-	isCompleted.value = isChecked
-}
 </script>
 
 <style scoped>
 .todo--completed {
 	@apply text-gray-300 line-through
+}
+
+.todo--processing {
+	filter: contrast(0.5);
+	@apply pointer-events-none;
 }
 </style>
