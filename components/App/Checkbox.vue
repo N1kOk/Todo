@@ -11,7 +11,15 @@
 <script setup lang="ts">
 import { computed } from '#imports'
 
+const emit = defineEmits<{
+	(event: 'change', isChecked: boolean): void
+}>()
+
 const isChecked = ref(false)
+
+watch(isChecked, (newValue) => {
+	emit('change', newValue)
+})
 
 const classes = computed(() => ({
 	'checkbox--checked': isChecked.value,
