@@ -4,10 +4,13 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+    line-height: 140%;
+}
+
 html {
     font-size: 16px;
     font-family: 'Commissioner', sans-serif;
-    line-height: 140%;
 
     @apply text-gray-100;
 }
