@@ -1,18 +1,3 @@
 <template>
-	<div class="space-y-12">
-		<AppButton>
-			<span>Создать</span>
-			<IconPlus/>
-		</AppButton>
-
-		<TodoList/>
-	</div>
+	<TodoList/>
 </template>
-
-<script>
-
-</script>
-
-<style scoped>
-
-</style>
