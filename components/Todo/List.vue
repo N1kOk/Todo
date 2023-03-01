@@ -2,7 +2,7 @@
 	<div class="space-y-12">
 		<AppButton
 			class="translate-y-[-50%]"
-			@click="modal.isShowed = true"
+			@click="modalCreate.isShowed = true"
 		>
 			<span>Создать</span>
 			<IconPlus/>
@@ -28,7 +28,7 @@
 				<TodoItem
 					v-for="todo in store.todos"
 					v-bind="todo"
-					@edit="handleEdit"
+					@edit="handleTodoItemEdit"
 					@toggle="handleToggle"
 					@remove="handleRemove"
 				/>
@@ -37,34 +37,72 @@
 	</div>
 
 	<AppModal
-		:is-showed="modal.isShowed"
-		:is-processing="modal.isProcessing"
-		@create="handleCreate"
-		@close="modal.isShowed = false"
+		title="Создать задачу"
+		button-text="Создать"
+		:is-showed="modalCreate.isShowed"
+		:is-processing="modalCreate.isProcessing"
+		@submit="handleCreate"
+		@close="modalCreate.isShowed = false"
+	/>
+
+	<AppModal
+		title="Редактировать задачу"
+		button-text="Редактировать"
+		:is-showed="modalEdit.isShowed"
+		:is-processing="modalEdit.isProcessing"
+		:init-todo-title="modalEdit.todoTitle"
+		:init-todo-text="modalEdit.todoText"
+		:init-todo-end-date="modalEdit.todoEndDate"
+		@submit="handleEdit"
+		@close="modalEdit.isShowed = false"
 	/>
 </template>
 
 <script setup lang="ts">
 import { useTodosStore } from '~/store'
 import { Todo } from '~/shared/todo'
+import { formatDate } from '~/shared/date'
 
 const store = useTodosStore()
 await store.fetchTodos()
 
-const modal = reactive({
+const modalCreate = reactive({
 	isShowed: false,
 	isProcessing: false
 })
 
-function handleCreate(todo: Todo) {
-	modal.isProcessing = true
+const modalEdit = reactive({
+	todoId: '',
+	todoTitle: '',
+	todoText: '',
+	todoEndDate: '',
+	isShowed: false,
+	isProcessing: false
+})
 
-	store.createTodo(todo).finally(() =>
-		modal.isProcessing = modal.isShowed = false)
+function handleTodoItemEdit(id: string) {
+	const currentTodo = store.todos.find(t => t.id === id)!
+
+	modalEdit.todoId = currentTodo.id
+	modalEdit.todoTitle = currentTodo.title
+	modalEdit.todoText = currentTodo.text
+	modalEdit.todoEndDate = formatDate(currentTodo.endDate)
+
+	modalEdit.isShowed = true
 }
 
-function handleEdit() {
+function handleCreate(todo: Todo) {
+	modalCreate.isProcessing = true
 
+	store.createTodo(todo).finally(() =>
+		modalCreate.isProcessing = modalCreate.isShowed = false)
+}
+
+function handleEdit(todo: Omit<Todo, 'id'>) {
+	modalEdit.isProcessing = true
+
+	store.updateTodo({ ...todo, id: modalEdit.todoId }).finally(() =>
+		modalEdit.isProcessing = modalEdit.isShowed = false)
 }
 
 function handleToggle(id: string, isCompleted: boolean) {

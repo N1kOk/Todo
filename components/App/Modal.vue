@@ -8,7 +8,7 @@
 			<div class="container relative">
 				<AppCard class="w-[457px] max-w-full mx-auto space-y-5 !bg-gray-400 !border-gray-500">
 					<div class="flex justify-between">
-						<span class="text-xl font-bold">Создать задачу</span>
+						<span class="text-xl font-bold">{{ title }}</span>
 						<IconClose class="cursor-pointer" @click="emit('close')"/>
 					</div>
 					<div class="space-y-3">
@@ -36,13 +36,11 @@
 						</AppInput>
 
 						<AppButton
-							@click="create"
+							@click="submit"
 							:is-disabled="isProcessing || modal.validations.size < 3"
 						>
-							<span v-if="!isProcessing">Создать</span>
-							<IconPlus v-if="!isProcessing"/>
-
-							<span v-else>Создание...</span>
+							<span>{{ buttonText }}</span>
+							<IconPlus/>
 						</AppButton>
 					</div>
 				</AppCard>
@@ -56,23 +54,48 @@ import { getCurrentDate, getDateFromString } from '~/shared/date'
 import { Todo } from '~/shared/todo'
 
 interface AppModalProps {
+	title: string
+	buttonText: string
+	initTodoTitle?: string
+	initTodoText?: string
+	initTodoEndDate?: string
 	isShowed: boolean
 	isProcessing: boolean
 }
 
-const props = defineProps<AppModalProps>()
-const { isShowed, isProcessing } = toRefs(props)
+const props = withDefaults(defineProps<AppModalProps>(), {
+	initTodoTitle: '',
+	initTodoText: '',
+	initTodoEndDate: '',
+})
+
+const {
+	title,
+	buttonText,
+	isShowed,
+	isProcessing,
+	initTodoTitle,
+	initTodoText,
+	initTodoEndDate,
+} = toRefs(props)
 
 const emit = defineEmits<{
 	(event: 'close'): void
-	(event: 'create', todo: Omit<Todo, 'id'>): void
+	(event: 'submit', todo: Omit<Todo, 'id'>): void
 }>()
 
 const modal = reactive({
-	todoTitle: '',
-	todoText: '',
-	todoEndDate: '',
+	todoTitle: initTodoTitle.value,
+	todoText: initTodoText.value,
+	todoEndDate: initTodoEndDate.value,
 	validations: new Set<string>(),
+})
+
+watch([initTodoTitle, initTodoText, initTodoEndDate], () => {
+	modal.todoTitle = initTodoTitle.value
+	modal.todoText = initTodoText.value
+	modal.todoEndDate = initTodoEndDate.value
+	modal.validations = new Set(['1', '2', '3'])
 })
 
 watch(isProcessing, (value) => {
@@ -84,7 +107,7 @@ watch(isProcessing, (value) => {
 	modal.validations.clear()
 })
 
-function create() {
+function submit() {
 	const {
 		todoTitle: title,
 		todoText: text,
@@ -94,7 +117,7 @@ function create() {
 	const startDate = getCurrentDate()
 	const endDate = getDateFromString(todoEndDate)
 
-	emit('create', { title, text, startDate, endDate, isCompleted: false })
+	emit('submit', { title, text, startDate, endDate, isCompleted: false })
 }
 
 function validateTitle(title: string) {

@@ -54,6 +54,9 @@ export const useTodosStore = defineStore('todos', () => {
 				body: todo
 			})
 			
+			currentTodo.title = todo.title
+			currentTodo.text = todo.text
+			currentTodo.endDate = todo.endDate
 			currentTodo.isCompleted = todo.isCompleted
 		} catch (error) {
 			showError(error)
