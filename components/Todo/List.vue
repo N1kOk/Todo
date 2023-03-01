@@ -24,7 +24,7 @@
 				</span>
 			</div>
 
-			<div class="space-y-3">
+			<div v-if="store.todos.length" class="space-y-3">
 				<TodoItem
 					v-for="todo in store.todos"
 					v-bind="todo"
@@ -32,6 +32,16 @@
 					@toggle="handleToggle"
 					@remove="handleRemove"
 				/>
+			</div>
+			<div v-else class="space-y-16">
+				<hr class="opacity-10">
+				<div class="flex flex-col items-center space-y-4">
+					<IconClipboard/>
+					<div class="text-center text-gray-300">
+						<div class="font-bold">У Вас еще нет созданных задач</div>
+						<div>Создавайте задачи и организуйте свои дела</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -8,7 +8,7 @@ export const useTodosStore = defineStore('todos', () => {
 	
 	const apiFetch = $fetch.create({ baseURL })
 	
-	const todo = ref<Todo>()
+	const todo = ref<Todo>({} as Todo)
 	const todos = ref<Todo[]>([])
 	
 	const todosCount = computed(() => todos.value.length)

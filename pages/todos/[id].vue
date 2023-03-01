@@ -21,4 +21,12 @@ const { id } = route.params as { id: string }
 
 const store = useTodosStore()
 await store.fetchTodo(id)
+
+useHead({
+	title: store.todo.title,
+	meta: [{
+		name: 'description',
+		content: store.todo.text
+	}]
+})
 </script>
