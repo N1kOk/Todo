@@ -16,7 +16,7 @@ html {
 }
 
 .container {
-    @apply w-[736px] mx-auto;
+    @apply w-[95%] lg:w-[736px] mx-auto;
 }
 
 .rounded {

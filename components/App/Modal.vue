@@ -5,8 +5,8 @@
 			class="fixed left-0 top-0 w-screen h-screen flex justify-center items-center z-[99999]"
 		>
 			<div class="absolute left-0 top-0 w-screen h-screen bg-black/50" @click="emit('close')"/>
-			<div class="relative">
-				<AppCard class="w-[457px] space-y-5 !bg-gray-400 !border-gray-500">
+			<div class="container relative">
+				<AppCard class="w-[457px] max-w-full mx-auto space-y-5 !bg-gray-400 !border-gray-500">
 					<div class="flex justify-between">
 						<span class="text-xl font-bold">Создать задачу</span>
 						<IconClose class="cursor-pointer" @click="emit('close')"/>
@@ -26,7 +26,14 @@
 							v-model="modal.todoEndDate"
 							:validate="validateDate"
 							placeholder="Дата окончания"
-						/>
+						>
+							<template #icon="iconProps">
+								<AppDatePicker
+									v-bind="iconProps"
+									@change="(date) => (modal.todoEndDate = date) && validateDate(date)"
+								/>
+							</template>
+						</AppInput>
 
 						<AppButton
 							@click="create"

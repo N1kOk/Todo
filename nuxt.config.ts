@@ -26,7 +26,7 @@ export default defineNuxtConfig({
 					},
 				},
 				screens: {
-					'lg': '1100px',
+					'lg': '750px',
 				},
 			},
 		},

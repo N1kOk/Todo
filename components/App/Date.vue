@@ -1,6 +1,6 @@
 <template>
 	<div class="flex space-x-1 text-[10px]">
-		<div class="text-gray-300">
+		<div class="text-gray-300 max-lg:hidden">
 			<div>Дата создания:</div>
 			<div>Дата окончания:</div>
 		</div>
