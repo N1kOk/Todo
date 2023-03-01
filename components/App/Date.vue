@@ -5,19 +5,21 @@
 			<div>Дата окончания:</div>
 		</div>
 		<div class="text-blue">
-			<div>{{ start }}</div>
-			<div>{{ end }}</div>
+			<div>{{ formatDate(start) }}</div>
+			<div>{{ formatDate(end) }}</div>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { Todo } from '~/types'
+import { Todo } from '~/shared/todo'
+import { formatDate } from '~/shared/date'
 
 interface AppDateProps {
 	start: Todo['startDate']
 	end: Todo['endDate']
 }
 
-const { start, end } = defineProps<AppDateProps>()
+const props = defineProps<AppDateProps>()
+const { start, end } = toRefs(props)
 </script>
