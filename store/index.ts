@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { $fetch } from 'ofetch'
-import { Todo } from '~/types'
+import { Todo } from '~/shared/todo'
 import { useAppConfig } from '#imports'
 
 export const useTodosStore = defineStore('todos', () => {

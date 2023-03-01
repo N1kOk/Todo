@@ -18,7 +18,7 @@
 				<div class="flex justify-between items-center">
 					<h2
 						class="text-xl font-bold"
-						:class="{'todo--completed': isCompleted}"
+						:class="classesText"
 					>
 						{{ title }}
 					</h2>
@@ -40,7 +40,7 @@
 					</div>
 				</div>
 
-				<p class="text-sm" :class="{'todo--completed': isCompleted}">
+				<p class="text-sm" :class="classesText">
 					{{ text }}
 				</p>
 			</div>
@@ -49,11 +49,12 @@
 </template>
 
 <script setup lang="ts">
-import type { Todo } from '~/types'
+import type { Todo } from '~/shared/todo'
 import { useRouter } from '#imports'
 
 const router = useRouter()
 
+const props = defineProps<Todo>()
 const {
 	id,
 	title,
@@ -62,13 +63,17 @@ const {
 	endDate,
 	isCompleted,
 	isProcessing,
-} = defineProps<Todo>()
+} = toRefs(props)
 
 const emit = defineEmits<{
 	(event: 'edit', id: string): void
 	(event: 'remove', id: string): void
 	(event: 'toggle', id: string, value: boolean): void
 }>()
+
+const classesText = computed(() => ({
+	'todo--completed': isCompleted.value
+}))
 </script>
 
 <style scoped>

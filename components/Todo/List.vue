@@ -2,13 +2,10 @@
 	<div class="space-y-12">
 		<AppButton
 			class="translate-y-[-50%]"
-			:class="{'pointer-events-none': button.isLoading}"
-			@click="handleCreate"
+			@click="modal.isShowed = true"
 		>
-			<span v-show="!button.isLoading">Создать</span>
-			<IconPlus v-show="!button.isLoading"/>
-
-			<span v-show="button.isLoading">Создание...</span>
+			<span>Создать</span>
+			<IconPlus/>
 		</AppButton>
 
 		<div class="space-y-6">
@@ -38,26 +35,32 @@
 			</div>
 		</div>
 	</div>
+
+	<AppModal
+		:is-showed="modal.isShowed"
+		:is-processing="modal.isProcessing"
+		@create="handleCreate"
+		@close="modal.isShowed = false"
+	/>
 </template>
 
 <script setup lang="ts">
 import { useTodosStore } from '~/store'
+import { Todo } from '~/shared/todo'
 
 const store = useTodosStore()
 await store.fetchTodos()
 
-const button = reactive({
-	isLoading: false,
+const modal = reactive({
+	isShowed: false,
+	isProcessing: false
 })
 
-function handleCreate() {
-	button.isLoading = true
+function handleCreate(todo: Todo) {
+	modal.isProcessing = true
 
-	store.createTodo({
-		title: 'Test',
-		text: 'Test text',
-		isCompleted: false,
-	}).finally(() => button.isLoading = false)
+	store.createTodo(todo).finally(() =>
+		modal.isProcessing = modal.isShowed = false)
 }
 
 function handleEdit() {
