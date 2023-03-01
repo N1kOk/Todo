@@ -28,6 +28,7 @@
 				<TodoItem
 					v-for="todo in store.todos"
 					v-bind="todo"
+					:key="todo.id"
 					@edit="handleTodoItemEdit"
 					@toggle="handleToggle"
 					@remove="handleRemove"
