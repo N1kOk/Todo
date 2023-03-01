@@ -1,15 +1,19 @@
 <template>
 	<div class="space-y-1">
-		<input
-			class="input"
-			:class="{
-				'!border-danger': error.isShowed
-			}"
-			:value="modelValue"
-			@input="(error.isShowed = false) || emit('update:modelValue', $event.target.value.trim())"
-			@blur="validateValue($event.target.value.trim())"
-			:placeholder="placeholder"
-		/>
+		<div class="relative">
+			<input
+				class="input"
+				:class="{
+					'!border-danger': error.isShowed
+				}"
+				:value="modelValue"
+				@input="emit('update:modelValue', $event.target.value.trim())"
+				@blur="validateValue"
+				:placeholder="placeholder"
+			/>
+			<slot class="absolute right-3 top-1/2 -translate-y-1/2" name="icon"/>
+		</div>
+
 		<div v-if="error.isShowed" class="text-danger text-xs">
 			{{ error.message }}
 		</div>
@@ -33,8 +37,12 @@ const error = reactive({
 	message: '',
 })
 
-function validateValue(value: string) {
-	const res = validate.value(value)
+watch(modelValue, () => {
+	error.isShowed = false
+})
+
+function validateValue() {
+	const res = validate.value(modelValue.value)
 
 	if (res === true) return
 
