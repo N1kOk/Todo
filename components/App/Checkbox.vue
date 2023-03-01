@@ -15,7 +15,8 @@ interface CheckboxProps {
 	isChecked: boolean
 }
 
-const { isChecked } = defineProps<CheckboxProps>()
+const props = defineProps<CheckboxProps>()
+const { isChecked } = toRefs(props)
 </script>
 
 <style scoped>

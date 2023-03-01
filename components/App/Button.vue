@@ -1,8 +1,22 @@
 <template>
-	<button class="button">
+	<button
+		class="button"
+		:class="{
+			'!bg-gray-300 pointer-events-none': isDisabled
+		}"
+	>
 		<slot/>
 	</button>
 </template>
+
+<script setup lang="ts">
+interface AppButtonProps {
+	isDisabled?: boolean
+}
+
+const props = defineProps<AppButtonProps>()
+const { isDisabled } = toRefs(props)
+</script>
 
 <style scoped>
 .button {
