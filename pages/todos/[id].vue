@@ -1,7 +1,8 @@
 <template>
 	<div class="pt-8 space-y-4">
 		<div class="text-sm text-gray-300">
-			<NuxtLink to="/">Главная</NuxtLink> / {{ store.todo.title }}
+			<NuxtLink to="/">Главная</NuxtLink>
+			/ {{ store.todo.title }}
 		</div>
 
 		<AppCard class="space-y-2">
@@ -15,18 +16,17 @@
 
 <script setup lang="ts">
 import { useTodosStore } from '~/store'
+import { useAsyncData } from '#imports'
 
 const route = useRoute()
 const { id } = route.params as { id: string }
 
 const store = useTodosStore()
-await store.fetchTodo(id)
 
-useHead({
-	title: store.todo.title,
-	meta: [{
-		name: 'description',
-		content: store.todo.text
-	}]
+const { data: todo } = await useAsyncData('todo', () => store.fetchTodo(id))
+
+useSeoMeta({
+	title: () => todo.value?.title || 'Default title',
+	description: () => todo.value?.text,
 })
 </script>

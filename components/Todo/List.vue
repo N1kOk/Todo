@@ -24,9 +24,9 @@
 				</span>
 			</div>
 
-			<div v-if="store.todos.length" class="space-y-3">
+			<div v-if="todos?.length" class="space-y-3">
 				<TodoItem
-					v-for="todo in store.todos"
+					v-for="todo in todos"
 					v-bind="todo"
 					:key="todo.id"
 					@edit="handleTodoItemEdit"
@@ -73,9 +73,11 @@
 import { useTodosStore } from '~/store'
 import { Todo } from '~/shared/todo'
 import { formatDate } from '~/shared/date'
+import { useAsyncData } from '#imports'
 
 const store = useTodosStore()
-await store.fetchTodos()
+
+const { data: todos } = await useAsyncData('todos', () => store.fetchTodos())
 
 const modalCreate = reactive({
 	isShowed: false,

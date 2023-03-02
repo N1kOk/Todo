@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-useHead({
+useSeoMeta({
 	title: 'Nuxt todo',
 })
 </script>

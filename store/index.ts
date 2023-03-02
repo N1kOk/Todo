@@ -18,6 +18,7 @@ export const useTodosStore = defineStore('todos', {
 		async fetchTodos() {
 			try {
 				this.todos = await apiFetch('/todos')
+				return this.todos
 			} catch (error) {
 				showError(error)
 			}
@@ -25,6 +26,7 @@ export const useTodosStore = defineStore('todos', {
 		async fetchTodo(id: string) {
 			try {
 				this.todo = await apiFetch(`/todos/${id}`)
+				return this.todo
 			} catch (error) {
 				showError(error)
 			}
