@@ -7,9 +7,10 @@
 					'!border-danger': error.isShowed
 				}"
 				:value="modelValue"
-				@input="emit('update:modelValue', $event.target.value.trim())"
+				@input="emit('update:modelValue', ($event.target as HTMLInputElement).value.trim())"
 				@blur="validateValue"
 				:placeholder="placeholder"
+				type="text"
 			/>
 			<slot class="absolute right-3 top-1/2 -translate-y-1/2" name="icon"/>
 		</div>
@@ -30,7 +31,9 @@ interface AppInputProps {
 const props = defineProps<AppInputProps>()
 const { modelValue, validate, placeholder } = toRefs(props)
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits<{
+	(event: 'update:modelValue', value: string): void
+}>()
 
 const error = reactive({
 	isShowed: false,

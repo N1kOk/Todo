@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<IconCalendar
-			@click="datePicker.showPicker()"
+			@click="handleClick"
 			class="text-gray-300 cursor-pointer transition-colors hover:text-gray-200"
 		/>
 		<input
@@ -9,20 +9,25 @@
 			class="absolute opacity-0 pointer-events-none"
 			type="date"
 			:min="getDateYMD()"
-			@change="handleChange($event.target.value)"
+			@change="handleChange"
 		>
 	</div>
 </template>
 
 <script setup lang="ts">
-
-const datePicker = ref(null)
+const datePicker = ref<HTMLInputElement>()
 
 const emit = defineEmits<{
 	(event: 'change', date: string): void
 }>()
 
-function handleChange(date: string) {
+function handleClick() {
+	if (datePicker.value)
+		datePicker.value.showPicker()
+}
+
+function handleChange(event: Event) {
+	const date = (event.target as HTMLInputElement).value
 	const [y, m, d] = date.split('-')
 
 	emit('change', `${d}.${m}.${y}`)

@@ -102,7 +102,7 @@ function handleTodoItemEdit(id: string) {
 	modalEdit.isShowed = true
 }
 
-function handleCreate(todo: Todo) {
+function handleCreate(todo: Omit<Todo, 'id'>) {
 	modalCreate.isProcessing = true
 
 	store.createTodo(todo).finally(() =>
