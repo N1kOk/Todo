@@ -73,11 +73,10 @@
 import { useTodosStore } from '~/store'
 import { Todo } from '~/shared/todo'
 import { formatDate } from '~/shared/date'
-import { useAsyncData } from '#imports'
 
 const store = useTodosStore()
 
-const { data: todos } = await useAsyncData('todos', () => store.fetchTodos())
+const { data: todos } = await useAsyncTodosData()
 
 const modalCreate = reactive({
 	isShowed: false,

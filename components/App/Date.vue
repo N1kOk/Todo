@@ -16,10 +16,14 @@ import { Todo } from '~/shared/todo'
 import { formatDate } from '~/shared/date'
 
 interface AppDateProps {
-	start: Todo['startDate']
-	end: Todo['endDate']
+	start?: Todo['startDate']
+	end?: Todo['endDate']
 }
 
-const props = defineProps<AppDateProps>()
+const props = withDefaults(defineProps<AppDateProps>(), {
+	start: 0,
+	end: 0,
+})
+
 const { start, end } = toRefs(props)
 </script>

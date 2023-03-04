@@ -2,28 +2,23 @@
 	<div class="pt-8 space-y-4">
 		<div class="text-sm text-gray-300">
 			<NuxtLink to="/">Главная</NuxtLink>
-			/ {{ store.todo.title }}
+			/ {{ todo?.title }}
 		</div>
 
 		<AppCard class="space-y-2">
-			<h2 class="text-xl font-bold">{{ store.todo.title }}</h2>
-			<p class="text-sm">{{ store.todo.text }}</p>
+			<h2 class="text-xl font-bold">{{ todo?.title }}</h2>
+			<p class="text-sm">{{ todo?.text }}</p>
 		</AppCard>
 
-		<AppDate :start="store.todo.startDate" :end="store.todo.endDate"/>
+		<AppDate :start="todo?.startDate" :end="todo?.endDate"/>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { useTodosStore } from '~/store'
-import { useAsyncData } from '#imports'
-
 const route = useRoute()
 const { id } = route.params as { id: string }
 
-const store = useTodosStore()
-
-const { data: todo } = await useAsyncData('todo', () => store.fetchTodo(id))
+const { data: todo } = await useAsyncTodoData(id)
 
 useSeoMeta({
 	title: () => todo.value?.title || 'Default title',

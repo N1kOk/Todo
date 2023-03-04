@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 import { $fetch } from 'ofetch'
 import { Todo } from '~/shared/todo'
 
+export type TodosStore = ReturnType<typeof useTodosStore>
+
 const baseURL = 'https://63fe2181571200b7b7c5c8d4.mockapi.io/api'
 const apiFetch = $fetch.create({ baseURL })
 
