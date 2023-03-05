@@ -10,8 +10,6 @@
 			</div>
 		</main>
 	</div>
-</template>
 
-<script setup lang="ts">
-import TheHeader from '~/components/TheHeader.vue'
-</script>
+	<AppDialog/>
+</template>

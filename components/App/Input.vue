@@ -3,55 +3,43 @@
 		<div class="relative">
 			<input
 				class="input"
-				:class="{
-					'!border-danger': error.isShowed
-				}"
+				v-bind="$attrs"
+				:class="classes"
 				:value="modelValue"
 				@input="emit('update:modelValue', ($event.target as HTMLInputElement).value.trim())"
-				@blur="validateValue"
-				:placeholder="placeholder"
 				type="text"
 			/>
 			<slot class="absolute right-3 top-1/2 -translate-y-1/2" name="icon"/>
 		</div>
 
-		<div v-if="error.isShowed" class="text-danger text-xs">
-			{{ error.message }}
+		<div v-if="errorMessage" class="text-danger text-xs">
+			{{ errorMessage }}
 		</div>
 	</div>
 </template>
 
+<script lang="ts">
+export default {
+	inheritAttrs: false
+}
+</script>
+
 <script setup lang="ts">
 interface AppInputProps {
 	modelValue: string
-	placeholder: string
-	validate: (text: string) => true | string
+	errorMessage?: string | Ref<string>
 }
 
-const props = defineProps<AppInputProps>()
-const { modelValue, validate, placeholder } = toRefs(props)
+const props = withDefaults(defineProps<AppInputProps>(), { errorMessage: '' })
+const { modelValue, errorMessage } = toRefs(props)
 
 const emit = defineEmits<{
 	(event: 'update:modelValue', value: string): void
 }>()
 
-const error = reactive({
-	isShowed: false,
-	message: '',
-})
-
-watch(modelValue, () => {
-	error.isShowed = false
-})
-
-function validateValue() {
-	const res = validate.value(modelValue.value)
-
-	if (res === true) return
-
-	error.message = res
-	error.isShowed = true
-}
+const classes = computed(() => ({
+	'!border-danger': errorMessage.value
+}))
 </script>
 
 <style scoped>

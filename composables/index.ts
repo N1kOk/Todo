@@ -1,6 +1,6 @@
 import { useAsyncData } from '#imports'
 import { Todo } from '~/shared/todo'
-import { useTodosStore } from '~/store'
+import { useTodosStore } from '~~/store/todo'
 
 export function useAsyncTodosData() {
 	const store = useTodosStore()

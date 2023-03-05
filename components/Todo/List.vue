@@ -2,7 +2,7 @@
 	<div class="space-y-12">
 		<AppButton
 			class="translate-y-[-50%]"
-			@click="modalCreate.isShowed = true"
+			@click="handleCreate"
 		>
 			<span>Создать</span>
 			<IconPlus/>
@@ -24,12 +24,12 @@
 				</span>
 			</div>
 
-			<div v-if="todos?.length" class="space-y-3">
+			<div v-if="store.todos.length" class="space-y-3">
 				<TodoItem
-					v-for="todo in todos"
+					v-for="todo in store.todos"
 					v-bind="todo"
 					:key="todo.id"
-					@edit="handleTodoItemEdit"
+					@edit="handleEdit"
 					@toggle="handleToggle"
 					@remove="handleRemove"
 				/>
@@ -46,80 +46,67 @@
 			</div>
 		</div>
 	</div>
-
-	<AppModal
-		title="Создать задачу"
-		button-text="Создать"
-		:is-showed="modalCreate.isShowed"
-		:is-processing="modalCreate.isProcessing"
-		@submit="handleCreate"
-		@close="modalCreate.isShowed = false"
-	/>
-
-	<AppModal
-		title="Редактировать задачу"
-		button-text="Редактировать"
-		:is-showed="modalEdit.isShowed"
-		:is-processing="modalEdit.isProcessing"
-		:init-todo-title="modalEdit.todoTitle"
-		:init-todo-text="modalEdit.todoText"
-		:init-todo-end-date="modalEdit.todoEndDate"
-		@submit="handleEdit"
-		@close="modalEdit.isShowed = false"
-	/>
 </template>
 
 <script setup lang="ts">
-import { useTodosStore } from '~/store'
-import { Todo } from '~/shared/todo'
-import { formatDate } from '~/shared/date'
+import { useTodosStore } from '~~/store/todo'
+import { formatDate, getCurrentDate, getDateFromString } from '~/shared/date'
+import { useDialogStore } from '~~/store/dialog';
 
 const store = useTodosStore()
+const dialogStore = useDialogStore()
 
-const { data: todos } = await useAsyncTodosData()
+await useAsyncTodosData()
 
-const modalCreate = reactive({
-	isShowed: false,
-	isProcessing: false
-})
+async function handleCreate() {
+	const isProcessing = await dialogStore.showDialog({
+		dialogTitle: 'Создание задачи',
+		buttonText: 'Создать'
+	})
 
-const modalEdit = reactive({
-	todoId: '',
-	todoTitle: '',
-	todoText: '',
-	todoEndDate: '',
-	isShowed: false,
-	isProcessing: false
-})
+	if (!isProcessing) return
 
-function handleTodoItemEdit(id: string) {
+	const { title, text, date } = dialogStore
+
+	store.createTodo({
+		title, text,
+		startDate: getCurrentDate(),
+		endDate: getDateFromString(date),
+		isCompleted: false
+	}).finally(() => {
+		dialogStore.closeDialog()
+	})
+}
+
+async function handleEdit(id: string) {
 	const currentTodo = store.todos.find(t => t.id === id)!
+	const { title, text } = currentTodo
+	const date = formatDate(currentTodo.endDate)
+	
+	const isProcessing = await dialogStore.showDialog({
+		title, text, date,
+		dialogTitle: 'Редактирование задачи',
+		buttonText: 'Редактировать'
+	})
 
-	modalEdit.todoId = currentTodo.id
-	modalEdit.todoTitle = currentTodo.title
-	modalEdit.todoText = currentTodo.text
-	modalEdit.todoEndDate = formatDate(currentTodo.endDate)
+	if (!isProcessing) return
 
-	modalEdit.isShowed = true
-}
-
-function handleCreate(todo: Omit<Todo, 'id'>) {
-	modalCreate.isProcessing = true
-
-	store.createTodo(todo).finally(() =>
-		modalCreate.isProcessing = modalCreate.isShowed = false)
-}
-
-function handleEdit(todo: Omit<Todo, 'id'>) {
-	modalEdit.isProcessing = true
-
-	store.updateTodo({ ...todo, id: modalEdit.todoId }).finally(() =>
-		modalEdit.isProcessing = modalEdit.isShowed = false)
+	store.updateTodo({
+		id,
+		title: dialogStore.title,
+		text: dialogStore.text,
+		startDate: currentTodo.startDate,
+		endDate: getDateFromString(dialogStore.date),
+		isCompleted: currentTodo.isCompleted
+	}).finally(() => {
+		dialogStore.closeDialog()
+	})
 }
 
 function handleToggle(id: string, isCompleted: boolean) {
-	const todo = store.todos.find(t => t.id === id)!
-	store.updateTodo({ ...todo, isCompleted })
+	const currentTodo = store.todos.find(t => t.id === id)!
+
+	store.updateTodo({ ...currentTodo, isCompleted })
 }
 
 function handleRemove(id: string) {
